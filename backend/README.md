@@ -9,7 +9,7 @@
 - 엔티티 연관관계 분석 (Simple GraphRAG)
 - RESTful API 제공
 
-## 빠른 시작
+## 실행
 ```bash
 # 의존성 설치
 pip install -r requirements.txt
