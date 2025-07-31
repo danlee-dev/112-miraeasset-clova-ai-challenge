@@ -1,10 +1,10 @@
 # AWS EC2 배포 가이드
 
-## 📋 사전 준비사항
+## 사전 준비사항
 - AWS 계정 (무료 계정 가능)
 - 신용카드 (무료 티어 내에서는 과금 없음)
 
-## 🚀 배포 과정
+## 배포 과정
 
 ### 1단계: EC2 인스턴스 생성
 1. AWS 콘솔 로그인 → EC2 서비스 이동
@@ -35,7 +35,7 @@ chmod +x aws-deploy.sh
 ./aws-deploy.sh
 ```
 
-## 🌐 접속 주소
+## 접속 주소
 - **Frontend**: http://YOUR-EC2-PUBLIC-IP:3000
 - **Backend API**: http://YOUR-EC2-PUBLIC-IP:8000
 - **API 문서**: http://YOUR-EC2-PUBLIC-IP:8000/docs

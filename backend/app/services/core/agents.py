@@ -1221,7 +1221,7 @@ class RetrieverAgent:
 # CriticAgent1
 class CriticAgent1:
     def __init__(self, llm=None):
-        self.llm = llm or HyperClovaXClient()
+        self.llm = llm or ClovaXLLM()
 
     async def evaluate(
         self, retrieved_results: Dict[str, Any], original_query: str
@@ -1493,7 +1493,7 @@ class ContextIntegratorAgent:
 # ReportGeneratorAgent
 class ReportGeneratorAgent:
     def __init__(self, llm=None):
-        self.llm = llm or HyperClovaXClient()
+        self.llm = llm or ClovaXLLM()
 
     def generate(self, context: str, user_context: Dict = None) -> str:
         print(f"Generating report with user context")

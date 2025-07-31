@@ -1,25 +1,25 @@
-# 🎯 미래에셋 AI 투자 어시스턴트 (Team 122)
+# 미래에셋 AI 투자 어시스턴트 (Team 122)
 
-> **개인화된 투자 인사이트**와 **AI 챗봇 어시스턴트**를 제공하는 통합 플랫폼
+**개인화된 투자 인사이트와 AI 챗봇 어시스턴트를 제공하는 통합 플랫폼**
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.11+-green.svg)
 ![React](https://img.shields.io/badge/react-18+-blue.svg)
 ![Docker](https://img.shields.io/badge/docker-compose-blue.svg)
 
-## 📋 프로젝트 개요
+## 프로젝트 개요
 
-이 프로젝트는 **미래에셋 대회 출품작**으로, 개인화된 투자 조언과 실시간 AI 채팅을 제공합니다.
+이 프로젝트는 미래에셋 대회 출품작으로, 개인화된 투자 조언과 실시간 AI 채팅을 제공합니다.
 
-### 🔥 핵심 기능
-- 🤖 **AI 챗봇**: HyperCLOVA X 기반 멀티 에이전트 시스템
-- 📊 **인사이트 생성**: DART API + 웹크롤링 + AI 분석
-- 🎬 **비디오 생성**: HeyGen API를 통한 AI 아바타 영상
-- 👤 **개인화**: 사용자 프로필 기반 맞춤형 서비스
+### 핵심 기능
+- **AI 챗봇**: HyperCLOVA X 기반 멀티 에이전트 시스템
+- **인사이트 생성**: DART API + 웹크롤링 + AI 분석
+- **비디오 생성**: HeyGen API를 통한 AI 아바타 영상
+- **개인화**: 사용자 프로필 기반 맞춤형 서비스
 
 ---
 
-## 🏗 시스템 아키텍처
+## 시스템 아키텍처
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -40,9 +40,9 @@
 
 ---
 
-## 🤖 1. AI 챗봇 어시스턴트
+## 1. AI 챗봇 어시스턴트
 
-### 🛠 핵심 기술 스택
+### 핵심 기술 스택
 - **LLM**: 네이버 HyperCLOVA X (HCX-003)
 - **워크플로우**: LangGraph 기반 멀티 에이전트 시스템
 - **검색**: Elasticsearch + Neo4j Graph RAG
@@ -106,7 +106,7 @@ graph LR
 - **CriticAgent**: 정보 충분성 평가 및 추가 검색 결정
 - **ReportGeneratorAgent**: 개인화된 투자 리포트 생성
 
-### 📊 데이터베이스 구조
+### 데이터베이스 구조
 
 #### **Elasticsearch (벡터 검색)**
 ```json
@@ -180,7 +180,7 @@ CREATE TABLE user_portfolio (
 );
 ```
 
-### 🔄 실시간 처리 플로우
+### 실시간 처리 플로우
 
 **1. 사용자 컨텍스트 통합**
 ```python
@@ -242,15 +242,15 @@ async def report_generation_node(state):
 
 ---
 
-## 📈 2. 인사이트 생성 시스템
+## 2. 인사이트 생성 시스템
 
-### 🛠 핵심 기술 스택
+### 핵심 기술 스택
 - **데이터 수집**: DART API + Playwright 웹크롤링
 - **AI 분석**: HyperCLOVA X 기반 분석
 - **비디오 생성**: HeyGen API / AI Studios
 - **실시간 스트리밍**: Server-Sent Events (SSE)
 
-### 🔗 API 엔드포인트
+### API 엔드포인트
 
 #### **개인화된 인사이트 생성**
 ```
@@ -300,7 +300,7 @@ POST /api/insights/generate-video
 }
 ```
 
-### 🏗 데이터 수집 파이프라인
+### 데이터 수집 파이프라인
 
 #### **1. DART API 데이터 수집**
 ```python
@@ -378,7 +378,7 @@ class WebSearchTool:
             return response.json()
 ```
 
-### 📊 인사이트 데이터베이스
+### 인사이트 데이터베이스
 
 #### **SQLite (인사이트 저장)**
 ```sql
@@ -406,7 +406,7 @@ CREATE TABLE insight_videos (
 );
 ```
 
-### 🎬 비디오 생성 워크플로우
+### 비디오 생성 워크플로우
 
 #### **1. 스크립트 생성**
 ```python
@@ -471,7 +471,7 @@ class HeyGenService:
         return response.json()
 ```
 
-### 🔄 실시간 스트리밍 플로우
+### 실시간 스트리밍 플로우
 
 ```python
 async def generate_streaming_insights(user_id: str, companies: List[str]):
@@ -519,7 +519,7 @@ async def generate_streaming_insights(user_id: str, companies: List[str]):
 
 ---
 
-## 🔗 시스템 통합 구조
+## 시스템 통합 구조
 
 ### **Frontend (React)**
 ```
@@ -593,7 +593,7 @@ API Integrations:
 
 ---
 
-## 🚀 빠른 시작
+## 빠른 시작
 
 ### **사전 요구사항**
 - Docker & Docker Compose
@@ -646,7 +646,7 @@ docker compose ps
 
 ---
 
-## 🧪 사용 예시
+## 사용 예시
 
 ### **1. 사용자 프로필 설정**
 ```javascript
@@ -692,7 +692,7 @@ const response = await api.post('/api/insights/personalized', insightRequest);
 
 ---
 
-## 📊 성능 지표
+## 성능 지표
 
 ### **응답 시간**
 - 간단한 채팅: ~2초
@@ -713,7 +713,7 @@ const response = await api.post('/api/insights/personalized', insightRequest);
 
 ---
 
-## 🛠 개발 정보
+## 개발 정보
 
 ### **기술 스택**
 - **Frontend**: React 18, Context API, Axios
@@ -737,13 +737,13 @@ const response = await api.post('/api/insights/personalized', insightRequest);
 
 ---
 
-## 📝 라이선스
+## 라이선스
 
 MIT License - 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
 
 ---
 
-## 👥 팀 정보
+## 팀 정보
 
 **Team 122 - 미래에셋 AI 투자 어시스턴트**
 
@@ -752,7 +752,7 @@ MIT License - 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
 
 ---
 
-## 📞 문의
+## 문의
 
 프로젝트 관련 문의사항이 있으시면 GitHub Issues를 이용해 주세요.
 

@@ -41,7 +41,7 @@ const UserProfileSetup = ({ onComplete }) => {
     const { name, value, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: checked 
+      [name]: checked
         ? [...prev[name], value]
         : prev[name].filter(item => item !== value)
     }));
@@ -75,7 +75,7 @@ const UserProfileSetup = ({ onComplete }) => {
     try {
       // 사용자 ID 생성 (이름 + 타임스탬프)
       const userId = `${formData.name.replace(/\s+/g, '_')}_${Date.now()}`;
-      
+
       // 사용자 프로필 저장
       const profileResponse = await fetch(`${API_BASE_URL}/api/user/profile`, {
         method: 'POST',
@@ -120,7 +120,7 @@ const UserProfileSetup = ({ onComplete }) => {
       };
 
       saveUser(userProfile);
-      
+
       if (onComplete) {
         onComplete(userProfile);
       }
@@ -160,7 +160,7 @@ const UserProfileSetup = ({ onComplete }) => {
           {currentStep === 1 && (
             <div className="form-step">
               <h3>기본 정보</h3>
-              
+
               <div className="form-group">
                 <label htmlFor="name">이름 *</label>
                 <input
@@ -254,7 +254,7 @@ const UserProfileSetup = ({ onComplete }) => {
           {currentStep === 2 && (
             <div className="form-step">
               <h3>투자 선호도</h3>
-              
+
               <div className="form-group">
                 <label>투자 목표 * (복수 선택 가능)</label>
                 <div className="checkbox-group">
@@ -326,7 +326,7 @@ const UserProfileSetup = ({ onComplete }) => {
           {currentStep === 3 && (
             <div className="form-step">
               <h3>포트폴리오 (선택사항)</h3>
-              
+
               <div className="portfolio-section">
                 <h4>보유 종목 추가</h4>
                 <div className="stock-input-grid">
@@ -392,8 +392,8 @@ const UserProfileSetup = ({ onComplete }) => {
                 <button type="button" onClick={prevStep} className="btn-prev">
                   이전 단계
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={isSubmitting}
                   className="btn-submit"
                 >

@@ -1,36 +1,62 @@
+# MiraeAsset CLOVA AI Challenge - Docker Compose
+version: '3.8'
+
 services:
   backend:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
     ports:
-      - "8001:8001"
-    volumes:
-      - ./backend:/app
-    env_file:
-      - ./backend/.env
-    working_dir: /app
-    # Playwright 헤드리스 모드를 위한 환경변수 추가
+      - "8000:8000"
     environment:
-      - DISPLAY=:99
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
       - PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+      - PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=0
       - ELASTICSEARCH_HOST=elasticsearch
       - ELASTICSEARCH_PORT=9200
-    # 더 많은 메모리와 shared memory 할당 (Playwright용)
-    shm_size: 2gb
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=122miraeasset
+      # 실제 API 키들
+      - NAVER_CLOVA_API_KEY=nv-8713f1b618e04e5095b402f2027c9affXOI2
+      - NAVER_CLOVA_API_HOST=clovastudio.stream.ntruss.com
+      - NAVER_CLOVA_MODEL=HCX-003
+      - USE_HYPERCLOVA=true
+      - GOOGLE_SERPER_API_KEY=962b2457d60f0c08fdb8fa26f84291cdc2af27af
+      - HEYGEN_API_KEY=YTMzZDhmOWNiZTA3NGMwMDhlOWZhYmUwZmQxNTY4MDctMTc1Mzg1NjkzOA==
+      - DART_API_KEY=db3b106cf3886f70ea0aa011165dfbab29bf7396
+    volumes:
+      - ./backend:/app  # 전체 백엔드 코드 마운트 (핫 리로드용)
+      - ./backend/data:/app/data
     restart: unless-stopped
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]  # 핫 리로드 활성화
     depends_on:
       - elasticsearch
+      - neo4j
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 40s
 
   frontend:
     build:
       context: ./Frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev  # 개발용 Dockerfile 사용
     ports:
-      - "3001:3000"
+      - "3000:3000"
     environment:
-      - PORT=3000
+      - REACT_APP_API_URL=http://3.37.16.208:8000
+      - CHOKIDAR_USEPOLLING=true  # 파일 변경 감지 개선
+      - FAST_REFRESH=true  # React Fast Refresh 활성화
+    volumes:
+      - ./Frontend/src:/app/src  # 소스 코드 마운트 (핫 리로드용)
+      - ./Frontend/public:/app/public
+      - /app/node_modules  # node_modules 제외
+    depends_on:
+      - backend
     restart: unless-stopped
 
   # Elasticsearch 클러스터
@@ -42,7 +68,7 @@ services:
       - cluster.name=es-docker-cluster
       - discovery.type=single-node
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  # AWS용으로 메모리 줄임
       - xpack.security.enabled=false
       - xpack.security.enrollment.enabled=false
       - xpack.security.http.ssl.enabled=false
@@ -58,27 +84,12 @@ services:
       - "9300:9300"
     restart: unless-stopped
     healthcheck:
-      test:
-        ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
 
-  # Kibana (선택사항 - 데이터 시각화용)
-  kibana:
-    image: docker.elastic.co/kibana/kibana:8.15.0
-    container_name: kibana
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-      - xpack.security.enabled=false
-    ports:
-      - "5601:5601"
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    restart: unless-stopped
-
-  # Neo4j는 그대로 유지
+  # Neo4j 데이터베이스
   neo4j:
     image: neo4j:5.19.0-community
     container_name: neo4j
@@ -90,26 +101,6 @@ services:
       - "7474:7474"
       - "7687:7687"
     restart: unless-stopped
-
-  # DART 파이프라인 서비스 (필요시 실행)
-  dart-pipeline:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    volumes:
-      - ./backend:/app
-    env_file:
-      - ./backend/.env
-    working_dir: /app
-    environment:
-      - ELASTICSEARCH_HOST=elasticsearch
-      - ELASTICSEARCH_PORT=9200
-    command: python -m app.pipelines.dart_to_elastic
-    depends_on:
-      - elasticsearch
-      - backend
-    profiles:
-      - pipeline
 
 volumes:
   elasticsearch-data:

@@ -18,6 +18,7 @@ from app.services.core.agents import (
 from app.services.core.enhanced_graph_rag import EnhancedGraphRAG
 from app.services.storage.insight_storage import InsightStorage
 from app.services.storage.user_memory import UserMemorySystem
+from app.services.user_memory import user_memory_service
 
 logger = logging.getLogger(__name__)
 
@@ -156,7 +157,7 @@ class EnhancedRAGWorkflow:
     async def user_context_loader_node(
         self, state: EnhancedWorkflowState
     ) -> EnhancedWorkflowState:
-        """사용자 컨텍스트 로딩 노드 (RDB 프로필 통합)"""
+        """사용자 컨텍스트 로딩 노드 (새로운 사용자 메모리 서비스 활용)"""
         try:
             # 1. 기존 사용자 메모리에서 컨텍스트 로드
             memory_context = await self.user_memory.get_user_context(
@@ -166,36 +167,58 @@ class EnhancedRAGWorkflow:
             # 2. 프론트엔드에서 전달받은 사용자 컨텍스트 사용
             frontend_context = state.get("user_context", {})
             
-            # 3. RDB에서 사용자 프로필 가져오기 (PersonalizedInsightGenerator 활용)
+            # 3. 새로운 사용자 메모리 서비스에서 사용자 정보 저장/조회
+            user_name = frontend_context.get("user_name", "")
+            if user_name and frontend_context:
+                # 사용자 프로필 저장
+                user_memory_service.save_user_profile(
+                    user_id=state["user_id"],
+                    user_name=user_name,
+                    user_context=frontend_context
+                )
+            
+            # 4. 저장된 사용자 프로필 조회
+            stored_profile = user_memory_service.get_user_profile(state["user_id"])
+            
+            # 5. RDB에서 사용자 프로필 가져오기 (PersonalizedInsightGenerator 활용)
             from app.services.core.personalized_insight_generator import PersonalizedInsightGenerator
             insight_generator = PersonalizedInsightGenerator()
             rdb_profile = insight_generator.get_user_profile_from_db(state["user_id"])
             
-            # 4. 통합된 사용자 컨텍스트 생성
+            # 6. 통합된 사용자 컨텍스트 생성
             integrated_context = {
                 **memory_context,  # 기존 메모리 시스템 데이터
                 **frontend_context,  # 프론트엔드에서 전달받은 실시간 데이터
                 "rdb_profile": rdb_profile,  # RDB 저장된 프로필 데이터
-                "user_name": frontend_context.get("user_name", ""),
-                "investment_experience": frontend_context.get("investment_experience", ""),
-                "risk_tolerance": frontend_context.get("risk_tolerance", ""),
-                "preferred_sectors": frontend_context.get("preferred_sectors", []),
-                "portfolio_count": frontend_context.get("portfolio_count", 0),
+                "stored_profile": stored_profile,  # 새로운 메모리 서비스에서 조회한 프로필
+                "user_name": stored_profile["user_name"] if stored_profile else frontend_context.get("user_name", ""),
+                "investment_experience": stored_profile["investment_experience"] if stored_profile else frontend_context.get("investment_experience", ""),
+                "risk_tolerance": stored_profile["risk_tolerance"] if stored_profile else frontend_context.get("risk_tolerance", ""),
+                "preferred_sectors": stored_profile["preferred_sectors"] if stored_profile else frontend_context.get("preferred_sectors", []),
+                "portfolio_count": stored_profile["portfolio_count"] if stored_profile else frontend_context.get("portfolio_count", 0),
                 "is_personalized": bool(rdb_profile.get("portfolio", [])),  # 포트폴리오 있으면 개인화됨
             }
             
+            # 7. 채팅용 사용자 컨텍스트 생성 (사용자 이름 등 기본 정보 포함)
+            user_context_for_chat = user_memory_service.get_user_context_for_chat(state["user_id"])
+            integrated_context["chat_context"] = user_context_for_chat
+            
             state["user_context"] = integrated_context
 
-            # 5. 최근 인사이트 검색
+            # 8. 최근 인사이트 검색
             recent_insights = await self.insight_storage.search_insights(
                 query=state["query"], user_id=state["user_id"], limit=3
             )
             state["user_context"]["recent_insights"] = recent_insights
 
+            profile_name = stored_profile["user_name"] if stored_profile else frontend_context.get('user_name', 'Unknown')
+            profile_exp = stored_profile["investment_experience"] if stored_profile else frontend_context.get('investment_experience', 'N/A')
+            profile_count = stored_profile["portfolio_count"] if stored_profile else frontend_context.get('portfolio_count', 0)
+
             logger.info(
-                f"사용자 컨텍스트 로딩 완료 - 사용자: {frontend_context.get('user_name', 'Unknown')}, "
-                f"경험: {frontend_context.get('investment_experience', 'N/A')}, "
-                f"포트폴리오: {frontend_context.get('portfolio_count', 0)}개"
+                f"사용자 컨텍스트 로딩 완료 - 사용자: {profile_name}, "
+                f"경험: {profile_exp}, "
+                f"포트폴리오: {profile_count}개"
             )
 
         except Exception as e:
@@ -408,9 +431,9 @@ class EnhancedRAGWorkflow:
     async def memory_update_node(
         self, state: EnhancedWorkflowState
     ) -> EnhancedWorkflowState:
-        """메모리 업데이트 노드"""
+        """메모리 업데이트 노드 (새로운 사용자 메모리 서비스 활용)"""
         try:
-            # 사용자 질문 저장
+            # 기존 메모리 시스템에 저장
             await self.user_memory.save_message(
                 user_id=state["user_id"],
                 session_id=state["session_id"],
@@ -428,12 +451,18 @@ class EnhancedRAGWorkflow:
                 user_id=state["user_id"],
                 session_id=state["session_id"],
                 message_type="assistant",
-                content=response_content[:500],  # 요약본 저장
+                content=response_content,
                 entities=state["graph_context"].get("entities", []),
-                intent="investment_analysis",
             )
-
-            logger.info("사용자 메모리 업데이트 완료")
+            
+            # 새로운 사용자 메모리 서비스에도 대화 기록 저장
+            user_memory_service.save_conversation(
+                user_id=state["user_id"],
+                message=state["query"],
+                response=response_content
+            )
+            
+            logger.info(f"메모리 업데이트 완료 - 사용자: {state['user_id']}")
 
         except Exception as e:
             logger.error(f"메모리 업데이트 실패: {e}")

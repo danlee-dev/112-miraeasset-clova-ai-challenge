@@ -338,21 +338,21 @@ const DailyInsights = () => {
     const mockInsights = [
       {
         id: 'mock_1',
-        date: '2025-01-27',
-        headline: '삼성전자 반도체 부문 실적 개선 전망',
-        summary: 'AI 반도체 수요 증가로 인한 메모리 가격 상승세가 지속되고 있습니다. 삼성전자의 4분기 실적 발표를 앞두고 긍정적인 전망이 이어지고 있으며...',
-        fullContent: 'AI 반도체 수요 증가로 인한 메모리 가격 상승세가 지속되고 있습니다. 삼성전자의 4분기 실적 발표를 앞두고 긍정적인 전망이 이어지고 있으며, 특히 HBM(고대역폭 메모리) 부문에서의 성장이 주목받고 있습니다. 엔비디아와의 공급 계약 확대 소식과 함께 중장기적으로 안정적인 성장이 예상됩니다. 다만 중국 시장 불확실성과 환율 변동성은 여전히 리스크 요인으로 작용할 것으로 보입니다.',
+        date: '2025-07-27',
+        headline: '오늘의 시장 요약',
+        summary: '최근 뉴스와 데이터를 종합해 보면 반도체와 전기차가 주요 테마로 부상하고 있습니다. 삼성전자와 SK하이닉스는 반도체 분야에서, 현대차는 전기차 분야에서 주목받고 있는데요...',
+        fullContent: '안녕하세요. 오늘의 시장 요약입니다. 최근 뉴스와 데이터를 종합해 보면 반도체와 전기차가 주요 테마로 부상하고 있습니다. 삼성전자와 SK하이닉스는 반도체 분야에서, 현대차는 전기차 분야에서 주목받고 있는데요, 특히 삼성전자와 SK하이닉스는 서로 긍정적인 영향을 주고받는 흐름을 보이고 있습니다. 한편 시장 전반에서는 미국 증시의 강세와 퇴직연금 제도 관련 이슈, 그리고 부동산 시장 조정 관련 뉴스들이 눈에 띕니다. 다만, 오늘은 특별한 공시나 포트폴리오 관련 이슈는 확인되지 않았습니다. 균형 잡힌 투자를 선호하신다면 반도체와 전기차 분야의 대표 기업들을 중심으로 시장 흐름을 점검해 보시는 것을 추천드립니다. 지금까지 오늘의 인사이트였습니다, 감사합니다.',
         scriptLength: 187,
         readingTime: '약 1분',
         analysisMethod: 'Graph RAG + 실시간 뉴스 분석',
         modelUsed: 'GPT-4',
-        videoUrl: null,
+        videoUrl: '/videos/overall.mp4', 
         videoThumbnail: 'https://via.placeholder.com/600x300/4285f4/ffffff?text=삼성전자+반도체+분석',
         tags: ['반도체', '삼성전자', 'AI']
       },
       {
         id: 'mock_2',
-        date: '2025-01-26',
+        date: '2025-07-26',
         headline: 'NAVER 클라우드 사업 확장과 AI 투자 현황',
         summary: 'NAVER가 하이퍼클로바X 기반의 B2B 사업을 본격 확장하고 있습니다. 클라우드 매출이 전년 대비 35% 증가하며 성장세를 보이고 있고...',
         fullContent: 'NAVER가 하이퍼클로바X 기반의 B2B 사업을 본격 확장하고 있습니다. 클라우드 매출이 전년 대비 35% 증가하며 성장세를 보이고 있고, 특히 금융권과 공공기관에서의 도입이 활발합니다. AI 검색 고도화와 개인화 서비스 강화로 MAU 증가세도 지속되고 있어 긍정적입니다. 다만 광고 시장 경쟁 심화와 신규 서비스 투자비용 증가는 단기 수익성에 부담을 줄 수 있습니다.',
@@ -360,13 +360,13 @@ const DailyInsights = () => {
         readingTime: '약 1분',
         analysisMethod: 'DART 공시 + 뉴스 크롤링',
         modelUsed: 'GPT-4',
-        videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+        videoUrl: '/videos/naver.mp4', 
         videoThumbnail: 'https://via.placeholder.com/600x300/03c75a/ffffff?text=NAVER+클라우드+AI',
         tags: ['NAVER', 'AI', '클라우드']
       },
       {
         id: 'mock_3',
-        date: '2025-01-25',
+        date: '2025-07-25',
         headline: 'SK하이닉스 HBM 시장 점유율 확대 전략',
         summary: 'SK하이닉스가 HBM3E 양산을 본격화하며 엔비디아 H200 GPU 공급을 시작했습니다. HBM 시장에서의 독점적 지위를 활용해...',
         fullContent: 'SK하이닉스가 HBM3E 양산을 본격화하며 엔비디아 H200 GPU 공급을 시작했습니다. HBM 시장에서의 독점적 지위를 활용해 마진율 개선이 기대됩니다. 2025년 HBM 매출은 전년 대비 100% 이상 증가할 것으로 전망되며, 차세대 HBM4 개발도 순조롭게 진행되고 있습니다. AMD, 구글과의 파트너십 확대도 성장 동력이 될 것으로 보입니다.',
@@ -374,7 +374,7 @@ const DailyInsights = () => {
         readingTime: '약 50초',
         analysisMethod: 'Graph RAG + 실시간 시세',
         modelUsed: 'GPT-4',
-        videoUrl: null,
+        videoUrl: '/videos/skhynix.mp4', 
         videoThumbnail: 'https://via.placeholder.com/600x300/ff6b35/ffffff?text=SK하이닉스+HBM',
         tags: ['SK하이닉스', 'HBM', '메모리']
       }

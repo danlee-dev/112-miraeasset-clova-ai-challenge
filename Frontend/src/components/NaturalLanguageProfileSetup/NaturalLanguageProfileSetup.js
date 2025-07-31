@@ -14,19 +14,19 @@ const NaturalLanguageProfileSetup = ({ onComplete }) => {
       timestamp: new Date()
     },
     {
-      type: 'assistant', 
+      type: 'assistant',
       message: '먼저 간단한 자기소개를 해주세요. 이름, 나이, 투자 경험 등을 자유롭게 말씀해 주시면 됩니다.',
       timestamp: new Date()
     }
   ]);
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState('안녕하세요, 저는 김철수이고 30살입니다. 현재 삼성전자에서 소프트웨어 엔지니어로 일하고 있어요. 월급은 500만원 정도 받고 있고, 투자 목표는 10년 후 집 마련을 위한 자금 확보입니다. 투자 성향은 안정적인 편이고, 관심 있는 투자 분야는 국내 대형주와 해외 ETF입니다. 투자 스타일은 장기 투자를 선호하고, 금액은 매월 100만원 정도 투자할 계획입니다. 혹시 저에게 맞는 투자 전략을 추천해주실 수 있나요?');
   const [extractedInfo, setExtractedInfo] = useState({});
   const [missingFields, setMissingFields] = useState([]);
 
   // 필수 정보 필드들
   const requiredFields = {
     name: '이름',
-    age: '나이', 
+    age: '나이',
     investment_experience: '투자 경험',
     risk_tolerance: '위험 허용도',
     investment_goals: '투자 목표',
@@ -38,7 +38,7 @@ const NaturalLanguageProfileSetup = ({ onComplete }) => {
   const sendToLLM = async (userInput, previousInfo = {}) => {
     try {
       setIsProcessing(true);
-      
+
       const response = await fetch(`${API_BASE_URL}/api/chat/profile-extraction`, {
         method: 'POST',
         headers: {
@@ -93,7 +93,7 @@ const NaturalLanguageProfileSetup = ({ onComplete }) => {
 
     // 부족한 정보 확인
     const missing = Object.keys(requiredFields).filter(
-      field => !newExtractedInfo[field] || 
+      field => !newExtractedInfo[field] ||
       (Array.isArray(newExtractedInfo[field]) && newExtractedInfo[field].length === 0)
     );
 
@@ -129,7 +129,7 @@ const NaturalLanguageProfileSetup = ({ onComplete }) => {
 
       // 사용자 ID 생성
       const userId = `${extractedInfo.name}_${Date.now()}`;
-      
+
       // 사용자 프로필 저장
       const userProfile = {
         user_id: userId,
@@ -187,7 +187,7 @@ const NaturalLanguageProfileSetup = ({ onComplete }) => {
     <div className="natural-profile-setup">
       <div className="setup-container">
         <div className="setup-header">
-          <h2>🤖 AI 프로필 설정 어시스턴트</h2>
+          <h2>AI 프로필 설정 어시스턴트</h2>
           <div className="step-indicator">
             <span className={currentStep >= 1 ? 'active' : ''}>1</span>
             <span className={currentStep >= 2 ? 'active' : ''}>2</span>
@@ -213,14 +213,14 @@ const NaturalLanguageProfileSetup = ({ onComplete }) => {
                     )}
                   </div>
                   <div className="message-time">
-                    {msg.timestamp.toLocaleTimeString('ko-KR', { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
+                    {msg.timestamp.toLocaleTimeString('ko-KR', {
+                      hour: '2-digit',
+                      minute: '2-digit'
                     })}
                   </div>
                 </div>
               ))}
-              
+
               {isProcessing && (
                 <div className="message assistant">
                   <div className="message-content">
@@ -245,17 +245,17 @@ const NaturalLanguageProfileSetup = ({ onComplete }) => {
                   </span>
                 )}
               </div>
-              
+
               <div className="input-area">
                 <textarea
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="편하게 자연어로 입력해주세요... (예: 안녕하세요, 저는 김철수이고 나이는 30살입니다. 투자 경험은 초보이고...)"
-                  rows={3}
+                  placeholder="예시 텍스트가 입력되어 있습니다. 수정하거나 바로 전송하세요..."
+                  rows={5}
                   disabled={isProcessing || currentStep === 2}
                 />
-                <button 
+                <button
                   onClick={handleUserInput}
                   disabled={!inputText.trim() || isProcessing || currentStep === 2}
                   className="send-button"
@@ -278,16 +278,16 @@ const NaturalLanguageProfileSetup = ({ onComplete }) => {
                 </div>
               ))}
             </div>
-            
+
             <div className="action-buttons">
-              <button 
+              <button
                 onClick={() => setCurrentStep(1)}
                 className="btn-back"
                 disabled={isProcessing}
               >
                 수정하기
               </button>
-              <button 
+              <button
                 onClick={handleConfirm}
                 className="btn-confirm"
                 disabled={isProcessing}
