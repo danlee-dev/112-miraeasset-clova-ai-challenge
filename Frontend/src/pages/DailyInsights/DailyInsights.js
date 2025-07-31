@@ -7,7 +7,7 @@ import './DailyInsights.css';
 const DailyInsights = () => {
   const { user, isLoggedIn, isLoading } = useUser();
   const [showProfileSetup, setShowProfileSetup] = useState(false);
-  
+
   // 전체 인사이트 목록 상태 (기존 + 새로 생성)
   const [insights, setInsights] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -46,7 +46,7 @@ const DailyInsights = () => {
   const handleProfileSetupComplete = (userProfile) => {
     console.log('프로필 설정 완료:', userProfile);
     console.log('현재 UserContext user:', user);
-    
+
     setShowProfileSetup(false);
     // 프로필 설정 완료 후 인사이트 생성 시작
     setTimeout(() => {
@@ -59,7 +59,7 @@ const DailyInsights = () => {
   const generateNewInsight = async () => {
     console.log('generateNewInsight 호출됨 - user 객체:', user);
     console.log('generateNewInsight 호출됨 - isLoggedIn:', isLoggedIn);
-    
+
     // UserContext의 user가 없으면 localStorage에서 직접 읽기
     let currentUser = user;
     if (!currentUser || !currentUser.user_id) {
@@ -73,7 +73,7 @@ const DailyInsights = () => {
         }
       }
     }
-    
+
     if (!currentUser || !currentUser.user_id) {
       console.error('사용자 정보가 없습니다. user:', currentUser);
       return;
@@ -345,8 +345,8 @@ const DailyInsights = () => {
         scriptLength: 187,
         readingTime: '약 1분',
         analysisMethod: 'Graph RAG + 실시간 뉴스 분석',
-        modelUsed: 'GPT-4',
-        videoUrl: '/videos/overall.mp4', 
+        modelUsed: 'HyperCLOVA X',
+        videoUrl: '/videos/overall.mp4',
         videoThumbnail: 'https://via.placeholder.com/600x300/4285f4/ffffff?text=삼성전자+반도체+분석',
         tags: ['반도체', '삼성전자', 'AI']
       },
@@ -359,8 +359,8 @@ const DailyInsights = () => {
         scriptLength: 162,
         readingTime: '약 1분',
         analysisMethod: 'DART 공시 + 뉴스 크롤링',
-        modelUsed: 'GPT-4',
-        videoUrl: '/videos/naver.mp4', 
+        modelUsed: 'HyperCLOVA X',
+        videoUrl: '/videos/naver.mp4',
         videoThumbnail: 'https://via.placeholder.com/600x300/03c75a/ffffff?text=NAVER+클라우드+AI',
         tags: ['NAVER', 'AI', '클라우드']
       },
@@ -373,8 +373,8 @@ const DailyInsights = () => {
         scriptLength: 145,
         readingTime: '약 50초',
         analysisMethod: 'Graph RAG + 실시간 시세',
-        modelUsed: 'GPT-4',
-        videoUrl: '/videos/skhynix.mp4', 
+        modelUsed: 'HyperCLOVA X',
+        videoUrl: '/videos/skhynix.mp4',
         videoThumbnail: 'https://via.placeholder.com/600x300/ff6b35/ffffff?text=SK하이닉스+HBM',
         tags: ['SK하이닉스', 'HBM', '메모리']
       }
