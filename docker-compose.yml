@@ -28,13 +28,9 @@ services:
       context: ./Frontend
       dockerfile: Dockerfile
     ports:
-      - "3001:3001"
+      - "3001:3000"
     environment:
-      - PORT=3001
-    volumes:
-      - ./Frontend:/app
-    working_dir: /app
-    command: npm start
+      - PORT=3000
     restart: unless-stopped
 
   # Elasticsearch 클러스터

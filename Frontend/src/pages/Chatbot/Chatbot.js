@@ -55,12 +55,11 @@ const Chatbot = () => {
 
   const sendMessageToAPI = async (message, files = []) => {
     return new Promise((resolve, reject) => {
-      let fullContent = "";
-      let isComplete = false;
       let botMsgId = Date.now() + 1;
-      
+      let botMessageAdded = false; // 중복 방지를 위한 플래그
+
       // 사용자 정보를 쿼리 파라미터에 포함
-      const params = new URLSearchParams({ 
+      const params = new URLSearchParams({
         query: message,
         user_id: user?.user_id || 'anonymous',
         user_name: user?.name || '',
@@ -71,21 +70,11 @@ const Chatbot = () => {
           portfolio_count: user?.portfolio?.length || 0
         })
       });
-      
+
       const eventSource = new window.EventSource(
         `http://localhost:8001/api/chat/stream?${params.toString()}`
       );
 
-      // 미리 bot 메시지 placeholder 추가
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: botMsgId,
-          type: "bot",
-          content: "",
-          timestamp: new Date(),
-        },
-      ]);
       setIsTyping(true);
 
       eventSource.onmessage = (event) => {
@@ -95,55 +84,37 @@ const Chatbot = () => {
           const data = JSON.parse(event.data);
           console.log("파싱된 데이터:", data);
 
-          // 백엔드 응답 형태에 맞게 처리
           if (data.status === "processing") {
             console.log("처리 중:", data.message);
-            // 처리 중 상태는 이미 isTyping으로 표시되므로 별도 처리 불필요
-          } else if (data.status === "completed" && data.response) {
-            fullContent = data.response;
-            setMessages((prev) =>
-              prev.map((m) =>
-                m.id === botMsgId ? { ...m, content: fullContent } : m
-              )
-            );
-            isComplete = true;
-            eventSource.close();
+            // 처리 중 상태는 타이핑 인디케이터로만 표시
+          } else if (data.status === "completed" && data.response && !botMessageAdded) {
+            // 최종 응답이 온 경우에만 bot 메시지 추가 (중복 방지)
+            const botMessage = {
+              id: botMsgId,
+              type: "bot",
+              content: data.response,
+              timestamp: new Date(),
+            };
+
+            setMessages((prev) => [...prev, botMessage]);
             setIsTyping(false);
-            resolve({ content: fullContent, success: true });
+            botMessageAdded = true;
+            eventSource.close();
+            resolve({ content: data.response, success: true });
           } else if (data.status === "error") {
-            isComplete = true;
-            eventSource.close();
             setIsTyping(false);
+            eventSource.close();
             reject(new Error(data.error || "알 수 없는 오류가 발생했습니다."));
-          } else if (data.type === "text_chunk") {
-            // 기존 형태도 지원 (하위 호환성)
-            fullContent += data.content;
-            setMessages((prev) =>
-              prev.map((m) =>
-                m.id === botMsgId ? { ...m, content: fullContent } : m
-              )
-            );
           }
         } catch (e) {
           console.error("JSON 파싱 에러:", e, "원본 데이터:", event.data);
-
-          if (event.data && event.data.trim()) {
-            fullContent += event.data;
-            setMessages((prev) =>
-              prev.map((m) =>
-                m.id === botMsgId ? { ...m, content: fullContent } : m
-              )
-            );
-          }
         }
       };
 
       eventSource.onerror = (err) => {
-        if (!isComplete) {
-          eventSource.close();
-          setIsTyping(false);
-          reject(err);
-        }
+        eventSource.close();
+        setIsTyping(false);
+        reject(err);
       };
     });
   };
