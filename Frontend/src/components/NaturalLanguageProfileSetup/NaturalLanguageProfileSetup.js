@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useUser } from '../../context/UserContext';
+import API_BASE_URL from '../../config/api';
 import './NaturalLanguageProfileSetup.css';
 
 const NaturalLanguageProfileSetup = ({ onComplete }) => {
@@ -38,7 +39,7 @@ const NaturalLanguageProfileSetup = ({ onComplete }) => {
     try {
       setIsProcessing(true);
       
-      const response = await fetch('http://localhost:8001/api/chat/profile-extraction', {
+      const response = await fetch(`${API_BASE_URL}/api/chat/profile-extraction`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -137,7 +138,7 @@ const NaturalLanguageProfileSetup = ({ onComplete }) => {
       };
 
       // 백엔드에 저장
-      const response = await fetch('http://localhost:8001/api/user/profile', {
+      const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

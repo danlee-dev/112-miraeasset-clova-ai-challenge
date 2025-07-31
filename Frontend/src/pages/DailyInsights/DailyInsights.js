@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useUser } from '../../context/UserContext';
 import NaturalLanguageProfileSetup from '../../components/NaturalLanguageProfileSetup/NaturalLanguageProfileSetup';
+import API_BASE_URL from '../../config/api';
 import './DailyInsights.css';
 
 const DailyInsights = () => {
@@ -15,11 +16,6 @@ const DailyInsights = () => {
 
   // 각 인사이트의 확장 상태를 별도로 관리 (핵심 수정!)
   const [expandedStates, setExpandedStates] = useState({});
-
-  // API 기본 URL
-  const API_BASE_URL = window.location.hostname === 'localhost'
-    ? 'http://localhost:8001'
-    : `http://${window.location.hostname}:8001`;
 
   // 날짜 포맷팅
   const formatDate = (dateString) => {

@@ -5,6 +5,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useUser } from '../../context/UserContext';
 import NaturalLanguageProfileSetup from '../../components/NaturalLanguageProfileSetup/NaturalLanguageProfileSetup';
+import API_BASE_URL from '../../config/api';
 import "./Chatbot.css";
 
 const Chatbot = () => {
@@ -72,7 +73,7 @@ const Chatbot = () => {
       });
 
       const eventSource = new window.EventSource(
-        `http://localhost:8001/api/chat/stream?${params.toString()}`
+        `${API_BASE_URL}/api/chat/stream?${params.toString()}`
       );
 
       setIsTyping(true);

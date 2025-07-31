@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useUser } from '../../context/UserContext';
+import API_BASE_URL from '../../config/api';
 import './UserProfileSetup.css';
 
 const UserProfileSetup = ({ onComplete }) => {
@@ -76,7 +77,7 @@ const UserProfileSetup = ({ onComplete }) => {
       const userId = `${formData.name.replace(/\s+/g, '_')}_${Date.now()}`;
       
       // 사용자 프로필 저장
-      const profileResponse = await fetch('http://localhost:8001/api/user/profile', {
+      const profileResponse = await fetch(`${API_BASE_URL}/api/user/profile`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -94,7 +95,7 @@ const UserProfileSetup = ({ onComplete }) => {
 
       // 포트폴리오 저장 (있는 경우)
       if (portfolio.length > 0) {
-        const portfolioResponse = await fetch('http://localhost:8001/api/user/portfolio', {
+        const portfolioResponse = await fetch(`${API_BASE_URL}/api/user/portfolio`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
