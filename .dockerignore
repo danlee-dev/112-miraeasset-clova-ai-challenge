@@ -1,0 +1,24 @@
+# Frontend 관련 파일들 제외
+Frontend/
+node_modules/
+.git/
+.gitignore
+*.md
+.env.example
+
+# Python 캐시 파일들
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.coverage
+.pytest_cache/
+
+# 로그 파일들
+*.log
+
+# 임시 파일들
+.DS_Store
+Thumbs.db
